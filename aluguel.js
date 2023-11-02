@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 const fetch = require("node-fetch"); // Importe a biblioteca node-fetch
 
-const patineteAcessoURL = "http://localhost:3003"; // Substitua pela URL correta
+const patineteServiceURL = "http://localhost:3003"; // Substitua pela URL correta
 
 const app = express();
 app.use(bodyParser.json());
@@ -22,6 +22,12 @@ db.serialize(() => {
 app.post("/alugueis/iniciar", async (req, res) => {
   const { patineteId, userId, startTime } = req.body;
 
+  // Defina a variável aluguel com os valores apropriados
+  const aluguel = {
+    id: 1, // Substitua pelo valor apropriado
+    // Outras propriedades do objeto aluguel
+  };
+
   // Verifique se o patinete está disponível
   const bloqueioResponse = await fetch(
     `${patineteServiceURL}/patinetes/bloquear/${patineteId}`,
@@ -33,7 +39,7 @@ app.post("/alugueis/iniciar", async (req, res) => {
       body: JSON.stringify({
         cartao: "1234 5678 9012 3456", //mudar
         amount: Math.ceil(Math.random() * 100),
-        aluguelId: aluguel.id,
+        aluguelId: aluguel.id, // Usando a variável aluguel
       }),
     }
   );
@@ -57,6 +63,7 @@ app.post("/alugueis/iniciar", async (req, res) => {
   stmt.finalize();
 
   // Função que modifica o status do patinete para "alugado"
+
   // Função que ativa os serviços de controle de acesso ao patinete bloqueio/desbloqueio
 });
 
