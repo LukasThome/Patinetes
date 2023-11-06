@@ -7,31 +7,33 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 app.use(bodyParser.json());
 
-// Crie ou abra um banco de dados SQLite
+const tempo = 2; //teste
+
+// cria um banco de dados SQLite
 const db = new sqlite3.Database("pagamentos.db"); // Substitua "pagamentos.db" pelo nome que você deseja.
 
-// Crie uma tabela para transações
+// cria uma tabela para transações
 db.serialize(() => {
   db.run(
     "CREATE TABLE IF NOT EXISTS transacoes (id INTEGER PRIMARY KEY, userId TEXT, valorCobranca REAL, transacaoId TEXT)"
   );
 });
 
-// Crie uma tabela para cartões de pagamento
+// cria uma tabela para cartões de pagamento
 db.serialize(() => {
   db.run(
     "CREATE TABLE IF NOT EXISTS cartoes_de_pagamento (id INTEGER PRIMARY KEY, userId TEXT, numeroCartao TEXT, nomeTitular TEXT, dataValidade TEXT, codigoSeguranca TEXT)"
   );
 });
 
-// Rota para registrar um novo cartão de pagamento
+// rota para registrar um novo cartão de pagamento
 app.post("/pagamento/registrar-cartao", (req, res) => {
   const { userId, numeroCartao, nomeTitular, dataValidade, codigoSeguranca } =
     req.body;
 
-  // Valide os dados do cartão, por exemplo, verificando o formato do número do cartão e a data de validade.
+  // funcao para validar os dados do cartão, por exemplo, verificando o formato do número do cartão e a data de validade.
 
-  // Insira o cartão de pagamento no banco de dados
+  // insere o cartão de pagamento no banco de dados
   const stmt = db.prepare(
     "INSERT INTO cartoes_de_pagamento (userId, numeroCartao, nomeTitular, dataValidade, codigoSeguranca) VALUES (?, ?, ?, ?, ?)"
   );
@@ -56,12 +58,12 @@ app.post("/pagamento/registrar-cartao", (req, res) => {
   stmt.finalize();
 });
 
-// Rota para efetuar uma cobrança
+// rota para efetuar uma cobrança
 app.post("/pagamento/cobrar/:userId", (req, res) => {
   const userId = req.params.userId;
   const transacaoId = uuidv4(); // Gera um ID UUID exclusivo
 
-  // Verifique se o usuário possui um cartão de pagamento registrado
+  // verifica se o usuário possui um cartão de pagamento registrado
   db.get(
     "SELECT * FROM cartoes_de_pagamento WHERE userId = ?",
     [userId],
@@ -72,10 +74,9 @@ app.post("/pagamento/cobrar/:userId", (req, res) => {
           .json({ error: "Erro ao verificar o cartão de pagamento." });
       } else if (row) {
         // cobrança
-        const valorCobranca = 10; // Valor de exemplo
-        //const transacaoId = "TRANS123"; // ID da transação de exemplo
+        const valorCobranca = tempo * 0.8; // Valor de exemplo, cobraria 80 centavos por minuto
 
-        // Registre a transação no banco de dados
+        // registra a transação no banco de dados
         db.run(
           "INSERT INTO transacoes (userId, valorCobranca, transacaoId) VALUES (?, ?, ?)",
           userId,
@@ -106,7 +107,7 @@ app.post("/pagamento/cobrar/:userId", (req, res) => {
 
 // Rota para visualizar todos os cartões de pagamento e transações
 app.get("/pagamento/cartoes-e-pagamentos", (req, res) => {
-  // Consulte o banco de dados para obter todos os cartões de pagamento e transações
+  // Consulta o banco de dados para obter todos os cartões de pagamento e transações
   db.all(
     "SELECT cartoes_de_pagamento.*, transacoes.valorCobranca, transacoes.transacaoId FROM cartoes_de_pagamento LEFT JOIN transacoes ON cartoes_de_pagamento.userId = transacoes.userId",
     (err, rows) => {

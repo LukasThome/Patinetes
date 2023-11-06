@@ -4,7 +4,7 @@ const sqlite3 = require("sqlite3").verbose();
 const fetch = require("node-fetch"); // Importe a biblioteca node-fetch
 const { v4: uuidv4 } = require("uuid");
 
-const patineteServiceURL = "http://localhost:3002"; // URL Pro acesso.js
+//const patineteServiceURL = "http://localhost:3002"; // URL Pro acesso.js
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,7 +15,7 @@ const db = new sqlite3.Database("alugueis.db");
 // Crie uma tabela para aluguéis
 db.serialize(() => {
   db.run(
-    "CREATE TABLE alugueis (id INTEGER PRIMARY KEY, patineteId TEXT, userId TEXT, startTime DATETIME, endTime DATETIME)"
+    "CREATE TABLE IF NOT EXISTS alugueis (id INTEGER PRIMARY KEY, patineteId TEXT, userId TEXT, startTime DATETIME, endTime DATETIME)"
   );
 });
 
@@ -110,9 +110,7 @@ app.post("/alugueis/encerrar", (req, res) => {
             if (err) {
               res.status(500).json({ error: "Erro ao encerrar o aluguel." });
             } else {
-              // Modificar o status do patinete de volta para "disponível"
-
-              // Ativaa os serviços de acesso ao patinete, como bloqueio/desbloqueio
+              // Ativaa os serviços de acesso ao patinete bloqueio/desbloqueio
 
               res
                 .status(200)
@@ -148,6 +146,7 @@ app.get("/alugueis", (req, res) => {
     }
   });
 });
+
 const port = process.env.PORT || 3004;
 app.listen(port, () => {
   console.log(`Servidor de controle de aluguéis rodando na porta ${port}`);
