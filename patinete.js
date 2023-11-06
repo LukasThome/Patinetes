@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 
 const db = new sqlite3.Database("patinetes.db");
 
-// Crie a tabela de patinetes se ela não existir
+// Cria tabela de patinetes se ela não existir
 db.serialize(function () {
   db.run(
     "CREATE TABLE IF NOT EXISTS patinetes (id INTEGER PRIMARY KEY, serial TEXT, status TEXT, latitude REAL, longitude REAL)"

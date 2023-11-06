@@ -8,7 +8,13 @@ app.use(bodyParser.json());
 const db = require("./patinete.js");
 
 // Mantenha um registro do status de cada patinete em memória.
-const patinetesStatus = {};
+const patinetesStatus = await fetch(` http://localhost:3002/patinetes`, {
+  method: "GET",
+  headers: {
+    "Content-Type": "aplication/json",
+  },
+});
+console.log(patineteStatus);
 
 /* Função para enviar uma requisição HTTP para atualizar o status do patinete
 async function atualizarStatusDoPatinete(patineteId, status) {
