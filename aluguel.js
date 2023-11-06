@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 const fetch = require("node-fetch"); // Importe a biblioteca node-fetch
+const { v4: uuidv4 } = require("uuid");
 
 const patineteServiceURL = "http://localhost:3002"; // URL Pro acesso.js
 
