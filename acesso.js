@@ -1,14 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const fetch = require("node-fetch");
+const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
 app.use(bodyParser.json());
+const db = require("./patinete.js");
 
 // Mantenha um registro do status de cada patinete em memória.
 const patinetesStatus = {};
 
-// Função para enviar uma requisição HTTP para atualizar o status do patinete
+/* Função para enviar uma requisição HTTP para atualizar o status do patinete
 async function atualizarStatusDoPatinete(patineteId, status) {
   const url = "http://localhost:3002/patinetes";
   const response = await fetch(url, {
@@ -19,9 +21,9 @@ async function atualizarStatusDoPatinete(patineteId, status) {
 
   return response;
 }
-
-// Rota para bloquear um patinete
-app.post("/patinetes/bloquear/:patineteId", async (req, res) => {
+*/
+/* Rota para bloquear um patinete
+app.patch("/patinetes/bloquear/:patineteId", async (req, res) => {
   const patineteId = req.params.patineteId;
 
   try {
@@ -42,8 +44,8 @@ app.post("/patinetes/bloquear/:patineteId", async (req, res) => {
     res.status(500).json({ error: "Erro ao obter o status do patinete." });
   }
 });
-
-// Rota para desbloquear um patinete
+*/
+/* Rota para desbloquear um patinete
 app.post("/patinetes/desbloquear/:patineteId", (req, res) => {
   const patineteId = req.params.patineteId;
 
@@ -61,6 +63,7 @@ app.post("/patinetes/desbloquear/:patineteId", (req, res) => {
     res.status(400).json({ error: "O patinete não está bloqueado." });
   }
 });
+*/
 
 const port = process.env.PORT || 3003;
 app.listen(port, () => {

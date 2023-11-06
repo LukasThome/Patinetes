@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Crie ou abra um banco de dados SQLite
-const db = new sqlite3.Database(":memory:");
+const db = new sqlite3.Database("pagamentos");
 
 // Crie uma tabela para transações
 db.serialize(() => {
